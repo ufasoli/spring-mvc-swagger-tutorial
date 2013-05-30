@@ -1,6 +1,7 @@
 package com.ufasoli.tutorial.swagger.springmvc.core.dao;
 
 import com.ufasoli.tutorial.swagger.springmvc.core.model.Book;
+import com.ufasoli.tutorial.swagger.springmvc.core.status.OperationResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -21,19 +22,47 @@ public class BookDAO implements DAO<Book, String> {
     @Autowired
     private JdbcTemplate template;
 
+
     @Override
-    public Book create(Book object) {
+    public OperationResult create(Book book) {
+
+        OperationResult result = new OperationResult(OperationResult.Status.UNKNOWN, "");
+        String sql = "INSERT INTO BOOKS (id, title, author, publicationYear, comment) VALUES (?,?,?,?,?)";
+
+        try{
+            template.update(sql, new Object[]{book.getId(), book.getTitle(), book.getAuthor(), book.getPublicationYear(), book.getComment()});
+            result.setStatus(OperationResult.Status.SUCCESS);
+            result.setMessage(String.format("The book  [%s] was successfully created", book));
+        }
+        catch (Exception e){
+            result.setStatus(OperationResult.Status.ERROR);
+            result.setMessage(String.format("An error occurred while processing the book [%s]. Error : [%s]", book, e.getMessage()));
+        }
+
+        return result;
+    }
+
+    @Override
+    public Book update(String id, Book book) {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
-    public Book update(String id, Book object) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
+    public OperationResult delete(String id) {
+        OperationResult result = new OperationResult(OperationResult.Status.UNKNOWN, "");
+        String sql = "INSERT INTO BOOKS (id, title, author, publicationYear, comment) VALUES (?,?,?,?,?)";
 
-    @Override
-    public void delete(String id) {
-        //To change body of implemented methods use File | Settings | File Templates.
+        try{
+            template.update(sql, new Object[]{book.getId(), book.getTitle(), book.getAuthor(), book.getPublicationYear(), book.getComment()});
+            result.setStatus(OperationResult.Status.SUCCESS);
+            result.setMessage(String.format("The book  [%s] was successfully created", book));
+        }
+        catch (Exception e){
+            result.setStatus(OperationResult.Status.ERROR);
+            result.setMessage(String.format("An error occurred while processing the book [%s]. Error : [%s]", book, e.getMessage()));
+        }
+
+        return result;
     }
 
     @Override

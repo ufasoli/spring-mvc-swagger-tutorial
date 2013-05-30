@@ -1,5 +1,7 @@
 package com.ufasoli.tutorial.swagger.springmvc.core.dao;
 
+import com.ufasoli.tutorial.swagger.springmvc.core.status.OperationResult;
+
 import java.util.List;
 
 /**
@@ -10,9 +12,9 @@ import java.util.List;
  */
 public interface DAO<T, U> {
 
-    public T create(T object);
+    public OperationResult create(T object);
     public T update(U id, T object);
-    public void delete(U id);
+    public OperationResult delete(U id);
     public T findOne(U id);
     public List<T> findAll();
 

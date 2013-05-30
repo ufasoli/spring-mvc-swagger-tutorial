@@ -24,8 +24,16 @@ public class BookService {
     @Autowired
     private DAO<Book, String> bookDAO;
 
+    /**
+     * Creates a book object
+     * Returns HTTP status Code 201 if book was successfully created
+     *
+     * @param book The book object to store in the database
+     */
     @RequestMapping(method = RequestMethod.POST)
     public  @ResponseBody void create(@RequestBody Book book){
+
+        bookDAO.create(book);
 
     }
 
