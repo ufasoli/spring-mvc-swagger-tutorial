@@ -6,12 +6,13 @@ package com.ufasoli.tutorial.swagger.springmvc.core.status;
  * Time: 20:44
  * Project : spring-mvc-swagger-tutorial
  */
-public class OperationResult {
+public class OperationResult<T> {
 
     public static enum Status {SUCCESS,ERROR, WARNING, UNKNOWN}
 
     private Status status;
     private  String message;
+    private T data;
 
     public OperationResult() {
     }
@@ -35,5 +36,13 @@ public class OperationResult {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public T getData() {
+        return data;
+    }
+
+    public void setData(T data) {
+        this.data = data;
     }
 }

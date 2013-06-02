@@ -13,7 +13,7 @@ import java.util.List;
 public interface DAO<T, U> {
 
     public OperationResult create(T object);
-    public T update(U id, T object);
+    public OperationResult<T> update(U id, T object);
     public OperationResult delete(U id);
     public T findOne(U id);
     public List<T> findAll();
