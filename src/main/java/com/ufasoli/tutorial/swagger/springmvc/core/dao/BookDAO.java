@@ -4,6 +4,7 @@ import com.google.common.base.Strings;
 import com.ufasoli.tutorial.swagger.springmvc.core.model.Book;
 import com.ufasoli.tutorial.swagger.springmvc.core.status.OperationResult;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
@@ -93,11 +94,16 @@ public class BookDAO implements DAO<Book, String> {
 
     @Override
     public Book findOne(String id) {
-        return template.queryForObject("SELECT * FROM BOOKS", new BeanPropertyRowMapper<Book>(Book.class));
+        try{
+            return template.queryForObject("SELECT * FROM BOOKS WHERE id=?", new Object[]{id}, new BeanPropertyRowMapper<Book>(Book.class));
+        }
+        catch (EmptyResultDataAccessException e){
+            return null;
+        }
     }
 
     @Override
     public List<Book> findAll() {
-        return template.query("SELECT * FROM BOOKS", new BeanPropertyRowMapper<Book>(Book.class));
+        return template.query("SELECT * FROM BOOKS",new BeanPropertyRowMapper<Book>(Book.class));
     }
 }

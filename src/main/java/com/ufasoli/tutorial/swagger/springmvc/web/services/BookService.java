@@ -4,6 +4,8 @@ package com.ufasoli.tutorial.swagger.springmvc.web.services;
 import com.ufasoli.tutorial.swagger.springmvc.core.dao.DAO;
 import com.ufasoli.tutorial.swagger.springmvc.core.model.Book;
 import com.ufasoli.tutorial.swagger.springmvc.core.status.OperationResult;
+import com.wordnik.swagger.annotations.ApiError;
+import com.wordnik.swagger.annotations.ApiErrors;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +13,7 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 
@@ -34,9 +37,9 @@ public class BookService {
      */
     @ApiOperation(value = "Creates a Book")
     @RequestMapping(method = RequestMethod.POST)
-    public  @ResponseBody void create(@ApiParam(required = true, name = "book", value = "The book object that needs to be created")@RequestBody Book book){
+    public  @ResponseBody OperationResult create(@ApiParam(required = true, name = "book", value = "The book object that needs to be created")@RequestBody Book book){
 
-        bookDAO.create(book);
+        return bookDAO.create(book);
 
 
     }
@@ -71,9 +74,19 @@ public class BookService {
      * @return the book object corresponding to the bookId parameter of nunll if no book was found
      */
     @ApiOperation(value = "Retrieves a book based on their id")
+    @ApiErrors(value = {@ApiError(code=404, reason = "No book corresponding to the id was found")})
     @RequestMapping(method = RequestMethod.GET, value = "/{bookId}")
-    public  @ResponseBody Book view(@ApiParam(name = "bookId" , required = true, value = "The id of the book that needs to be retrieved")@PathVariable("bookId") String bookId){
-        return bookDAO.findOne(bookId);
+    public  @ResponseBody Book view(
+            @ApiParam(name = "bookId" , required = true, value = "The id of the book that needs to be retrieved")@PathVariable("bookId") String bookId,
+            HttpServletResponse response){
+
+        Book book =  bookDAO.findOne(bookId);
+
+        if(book == null){
+
+            response.setStatus(404);
+        }
+        return book;
     }
 
     /**
